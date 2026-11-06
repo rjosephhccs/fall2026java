@@ -8,7 +8,7 @@ import com.inventory.user.exception.UserNotFoundException;
 import com.inventory.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.List;//not needed?
 
 @Service
 public class UserService {
@@ -24,6 +24,12 @@ public class UserService {
                 .stream()
                 .map(this::toDto)
                 .toList();
+    }
+    
+    public User getUserByUsername(String username) {//need to add a way to search by username in order to validate user credentials (login page should request username and password)
+    	User user = userRepository.findByUsername(username).get();
+    	
+    	return user;
     }
 
     public UserResponse getUserById(Integer id) {
