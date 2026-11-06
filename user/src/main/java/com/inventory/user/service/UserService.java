@@ -10,8 +10,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -32,12 +37,13 @@ public class UserService {
 
         return toDto(user);
     }
-
+    
+    // outdated
     public UserResponse createUser(CreateUserRequest dto) {
 
         User user = new User(
         		dto.username(),
-                dto.passwordHash(),
+                dto.password(),
                 dto.role(),
                 dto.firstName(),
                 dto.lastName(),
@@ -90,4 +96,9 @@ public class UserService {
                 user.getUpdatedAt()
         );
     }
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
+	}
 }

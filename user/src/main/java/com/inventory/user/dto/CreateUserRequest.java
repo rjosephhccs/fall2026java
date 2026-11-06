@@ -2,7 +2,7 @@ package com.inventory.user.dto;
 
 public record CreateUserRequest(
         String username,
-        String passwordHash,
+        String password,
         String role,
         String firstName,
         String lastName,

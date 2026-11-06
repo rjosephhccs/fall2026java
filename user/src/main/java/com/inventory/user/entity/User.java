@@ -2,14 +2,23 @@ package com.inventory.user.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 	
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
 
     @Column(nullable = false, unique = true)
@@ -67,9 +76,12 @@ public class User {
 
     // Getters and Setters
 	public Integer getUserId() { return userId; }
-	public String getUsername() {return username; }
+	@Override
+	public String getUsername() { return username; }
 	public void setUsername(String name) { username = name; }
-	public String getPasswordHash() { return passwordHash; }
+	// public String getPasswordHash() { return passwordHash; }
+	@Override
+	public String getPassword() { return passwordHash; }
 	public void setPasswordHash(String hash) { passwordHash = hash; }
 	public String getRole() { return role; }
 	public void setRole(String role) { this.role = role; }
@@ -84,4 +96,20 @@ public class User {
 	public LocalDateTime getCreatedAt() { return createdAt; }
 	public LocalDateTime getUpdatedAt() { return updatedAt; }
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+	}
+
+	@Override
+	public boolean isAccountNonLocked(){return true;}
+
+    @Override
+    public boolean isAccountNonExpired(){return true;}
+
+    @Override
+    public boolean isCredentialsNonExpired(){return true;}
+
+    @Override
+    public boolean isEnabled(){return isActive;}
 }
