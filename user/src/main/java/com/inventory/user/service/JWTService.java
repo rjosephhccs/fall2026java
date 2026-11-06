@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class JWTService {
 
     // @Value("${jwt.secret}")
-    private String secretKey = "super-secret";
+    private String secretKey = "my-super-secret-key-my-super-secret-key";
 
     // @Value("${jwt.expiration}")
     private long expiration = 1000 * 60 * 60;

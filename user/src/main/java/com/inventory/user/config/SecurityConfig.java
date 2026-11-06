@@ -1,4 +1,4 @@
-package config;
+package com.inventory.user.config;
 
 import com.inventory.user.filter.JwtAuthFilter;
 import com.inventory.user.service.UserService;
@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("api/users/**").hasRole("SUPER_USER")
+                        .requestMatchers("/api/users/**").hasRole("SUPER_USER")
                         // .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
