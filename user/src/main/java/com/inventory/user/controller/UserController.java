@@ -1,7 +1,6 @@
 package com.inventory.user.controller;
 
 import com.inventory.user.dto.*;
-import com.inventory.user.entity.User;
 import com.inventory.user.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,41 +27,26 @@ public class UserController {
     public UserResponse getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
     }
-
+    
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse createUser(// added password hashing to store into the database
+    public UserResponse createUser(// moved password hashing to UserService
             @RequestBody CreateUserRequest dto) {
-    	SecurityConfig hasher = new SecurityConfig();
-    	String hashPass = hasher.passwordEncoder().encode(dto.passwordHash());
-    	
-    	CreateUserRequest updatedReq = new CreateUserRequest(dto.username(), hashPass, dto.role(), dto.firstName(), dto.lastName(), dto.email(), true);
-
-        return userService.createUser(updatedReq);
+        return userService.createUser(dto);
     }
     
+    /*
     @PostMapping("/authenticate")
-    public String authenticate(@RequestBody UserCredentials dto) {//verifying user credentials and generate token.
-    	
-    	User result  = userService.getUserByUsername(dto.username());
-    	SecurityConfig checker = new SecurityConfig();
-    	boolean valid = checker.passwordEncoder().matches(dto.password(), result.getPasswordHash());
-    	System.out.println(valid);
-    	
-    	if(valid) {
-        	String token = JwtUtil.generateToken(dto.username());
-        	System.out.println(token);
-    	}
-    	
-    	return null;
+    public String authenticate(// moved authentication to UserService
+    		@RequestBody UserCredentials dto) {
+    	return userService.authenticate(dto);
     }
     
     @PostMapping("/validate")
-    public boolean tokenCheck(String token) {
-    	boolean result = JwtUtil.validateToken(token);
-    	System.out.println(result);
-    	return result;
+    public String tokenCheck(String token) {
+    	return jwtUtil.extractUsername(token);
     }
+    */
 
     @PutMapping("/{id}")
     public UserResponse updateUser(

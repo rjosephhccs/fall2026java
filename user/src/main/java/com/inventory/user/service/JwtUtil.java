@@ -3,38 +3,50 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.InvalidKeyException;
 import io.jsonwebtoken.security.Keys;
 
-@Component
+import java.security.Key;
 
+@Service
 public class JwtUtil {
-    private static final String SECRET_KEY = "basiclittlekeyforourlittlesecretkeyqixisiliveliness";
-    private static final SecretKey Skey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
+    private final String SECRET_KEY = "basiclittlekeyforourlittlesecretkeyqixisiliveliness";
+    private final SecretKey Skey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
 
     
-    public static String generateToken(String username) {
+    public String generateToken(String username) {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24h
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(Skey)
                 .compact();
     }
     
-    public static boolean validateToken(String token) {
-    	
+    public Claims getClaims(String token) {
         try {
-        	Jwts.parser().verifyWith(Skey).build().parseUnsecuredClaims(token);
-            return true;
-        } catch (SecurityException e) {
-            System.err.println("Invalid JWT signature");
-        } catch (Exception e) {
-            System.err.println("Invalid JWT claims");
+        	return Jwts.parser()
+	        		.verifyWith(Skey)
+	       			.build()
+	       			.parseSignedClaims(token)
+	       			.getPayload();
+        } catch(InvalidKeyException e) {
+        	throw new RuntimeException("Invalid JWT signature");
         }
-        return false;
     }
+    
+    public String extractUsername(String token){
+        return getClaims(token).getSubject();
+    }
+
+	public boolean isTokenExpired(String token){
+	       return getClaims(token).getExpiration().before(new Date(System.currentTimeMillis()));
+	}
+	
+	
 }
