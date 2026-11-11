@@ -6,17 +6,19 @@ import com.inventory.user.dto.*;
 import com.inventory.user.entity.User;
 import com.inventory.user.exception.UserNotFoundException;
 import com.inventory.user.repository.UserRepository;
-import org.springframework.stereotype.Service;
 
-import java.util.List;//not needed?
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder hasher;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder hasher) {
         this.userRepository = userRepository;
+    	this.hasher = hasher;
     }
 
     public List<UserResponse> getAllUsers() {
@@ -26,11 +28,13 @@ public class UserService {
                 .toList();
     }
     
-    public User getUserByUsername(String username) {//need to add a way to search by username in order to validate user credentials (login page should request username and password)
+    /*
+    public User getUserByUsername(String username) {
     	User user = userRepository.findByUsername(username).get();
     	
     	return user;
     }
+    */
 
     public UserResponse getUserById(Integer id) {
         User user = userRepository.findById(id)
@@ -43,7 +47,7 @@ public class UserService {
 
         User user = new User(
         		dto.username(),
-                dto.passwordHash(),
+                hasher.encode(dto.password()),
                 dto.role(),
                 dto.firstName(),
                 dto.lastName(),
@@ -81,6 +85,17 @@ public class UserService {
         user.setActive(false);
         userRepository.save(user);
     }
+    
+    /*
+    public String authenticate(@RequestBody UserCredentials dto) {//verifying user credentials and generate token.
+    	
+    	User user = getUserByUsername(dto.username());
+    	if (hasher.matches(dto.password(), user.getPassword()))
+    		return jwtUtil.generateToken(dto.username());
+    	else
+    		throw new BadCredentialsException("Invalid username or password");
+    }
+    */
 
     private UserResponse toDto(User user) {
 
