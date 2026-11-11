@@ -26,14 +26,9 @@ public class AuthController {
         return authService.registerUser(dto);
     }
     
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public String authenticate(
     		@RequestBody UserCredentials dto) {
     	return authService.authenticate(dto);
-    }
-    
-    @PostMapping("/validate")
-    public String tokenCheck(String token) {
-    	return jwtUtil.extractUsername(token);
     }
 }

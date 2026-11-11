@@ -46,7 +46,7 @@ public class AuthService {
     			.orElseThrow(() -> new BadCredentialsException("Invalid username"));
     	
     	if (hasher.matches(dto.password(), user.getPassword()))
-    		return jwtUtil.generateToken(dto.username());
+    		return jwtUtil.generateToken(user.getUsername(), user.getRole());	// could add ROLE_ prefix here?
     	else
     		throw new BadCredentialsException("Invalid password");
     }
