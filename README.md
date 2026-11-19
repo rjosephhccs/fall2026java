@@ -5,7 +5,7 @@ The code was made using the Eclipse IDE. To use this project, run the UserApplic
 ```Json Examples along with a template at the bottom
 { (Delete this: For POST http://localhost:8080/api/users
   "username": "testing",
-  "passwordHash": "hashed?",
+  "password": "hashed?",
   "role": "SUPER_USER",
   "firstName": "him",
   "lastName": "ag",
@@ -32,7 +32,7 @@ The code was made using the Eclipse IDE. To use this project, run the UserApplic
 
 { (Delete this: Blank template for POST http://localhost:8080/api/users
   "username": "",
-  "passwordHash": "",
+  "password": "",
   "role": "SUPER_USER",
   "firstName": "",
   "lastName": "",
