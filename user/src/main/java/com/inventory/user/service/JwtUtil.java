@@ -1,4 +1,5 @@
 package com.inventory.user.service;
+import java.util.Base64;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -35,6 +36,11 @@ public class JwtUtil {
     
     public Claims getClaims(String token) {
         try {
+        	String[] decoded = token.split("\\.");
+        	for (String part : decoded)
+        		System.out.println(new String(Base64.getUrlDecoder().decode(part)));
+        		
+        		
         	Claims claims = Jwts.parser()
 	        		.verifyWith(Skey)
 	       			.build()

@@ -5,8 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.inventory.user.dto.CreateUserRequest;
-import com.inventory.user.dto.UserCredentials;
+import com.inventory.user.dto.*;
 import com.inventory.user.entity.User;
 import com.inventory.user.repository.UserRepository;
 
@@ -50,4 +49,8 @@ public class AuthService {
     	else
     		throw new BadCredentialsException("Invalid password");
     }
+	
+	public String validate(@RequestBody UserToken dto) {
+		return jwtUtil.extractUsername(dto.token());
+	}
 }
