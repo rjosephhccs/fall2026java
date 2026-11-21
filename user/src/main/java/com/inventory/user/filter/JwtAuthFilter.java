@@ -44,9 +44,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             final String username = jwtUtil.extractUsername(jwt);
             final String role = jwtUtil.extractRole(jwt);
             
-            //debugging
-            //System.out.println("Username: " + username);
-            //System.out.println("Role: " + role);
+           // debugging
+            System.out.println("Username: " + username);
+            System.out.println("Role: " + role);
             
             if (// 3. If token is valid and user isn't already authenticated in this context
             			username != null
