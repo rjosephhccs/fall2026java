@@ -1,13 +1,16 @@
 package com.inventory.user.controller;
 
 import com.inventory.user.dto.*;
+
 import com.inventory.user.service.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -27,8 +30,17 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    public String authenticate(
+    public ResponseEntity<Map<String, String>>  authenticate(
     		@RequestBody UserCredentials dto) {
-    	return authService.authenticate(dto);
+    	
+        Map<String, String> response = new HashMap<>();
+        response.put("token", authService.authenticate(dto));
+
+    	return ResponseEntity.ok(response);
+    }
+    
+    @PostMapping("/validate")
+    public String tokenCheck(String token) {
+    	return jwtUtil.extractUsername(token);
     }
 }
